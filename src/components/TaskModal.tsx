@@ -524,7 +524,7 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                         <Play className="w-4 h-4" />
                         <span className="uppercase">ВОСПРОИЗВЕСТИ</span>
                       </button>
-                      <span className="text-sm text-green-700 uppercase">ГОЛОСОВОЕ СООБЩЕНИЕ ЗАПИСАНО</span>
+                      <div class="flex items-center space-x-2 p-2 bg-blue-50 rounded-lg"><button type="button" class="flex items-center space-x-2 px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play w-4 h-4"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Воспроизвести</span></button><span class="text-sm text-blue-700">Голосовое сообщение записано</span><button type="button" class="text-red-500 hover:text-red-700"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
                       <button
                         type="button"
                         onClick={() => setAudioBlob(null)}
@@ -547,9 +547,9 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                 {/* Existing attachments */}
                 {attachments.length > 0 && (
                   <div className="space-y-2">
-                    <div className="text-sm font-medium text-gray-700 uppercase bg-[#CCCCFF] px-3 py-1 rounded">СУЩЕСТВУЮЩИЕ ВЛОЖЕНИЯ:</div>
+                    <div className="text-sm font-medium text-gray-700 uppercase px-3 py-1 rounded">СУЩЕСТВУЮЩИЕ ВЛОЖЕНИЯ:</div>
                     {attachments.map((attachment) => (
-                      <div key={attachment.id} className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200">
+                      <div key={attachment.id} className="flex items-center justify-between p-3 bg-[#c8c8f7] rounded-xl border border-[#a7a7fc]">
                         <div className="flex items-center space-x-2">
                           <Paperclip className="w-4 h-4 text-blue-600" />
                           <span className="text-sm text-blue-800 uppercase">{attachment.name}</span>
