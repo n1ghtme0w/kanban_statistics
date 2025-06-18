@@ -25,18 +25,42 @@ export function UserManagement() {
 
   const tasks = getCurrentBoardTasks();
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.(ru|com|org|net|edu|gov|mil|int|info|biz|name|museum|coop|aero|[a-z]{2})$/i;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     
+    if (!validateEmail(formData.email)) {
+      setError('ПОЖАЛУЙСТА, ВВЕДИТЕ КОРРЕКТНЫЙ EMAIL АДРЕС (НАПРИМЕР: USER@EXAMPLE.COM)');
+      return;
+    }
+    
     if (editingUser) {
+      // Check for duplicates when editing (excluding current user)
+      const existingUserByEmail = users.find(u => u.email.toLowerCase() === formData.email.toLowerCase() && u.id !== editingUser.id);
+      const existingUserByName = users.find(u => u.name.toLowerCase() === formData.name.toLowerCase() && u.id !== editingUser.id);
+      
+      if (existingUserByEmail) {
+        setError('ПОЛЬЗОВАТЕЛЬ С ТАКИМ EMAIL УЖЕ СУЩЕСТВУЕТ');
+        return;
+      }
+      
+      if (existingUserByName) {
+        setError('ПОЛЬЗОВАТЕЛЬ С ТАКИМ ИМЕНЕМ УЖЕ СУЩЕСТВУЕТ');
+        return;
+      }
+      
       updateUser(editingUser.id, formData);
       setEditingUser(null);
       setShowAddUser(false);
     } else {
       const result = await addUser(formData);
       if (!result.success) {
-        setError(result.message);
+        setError(result.message.toUpperCase());
         return;
       }
       setShowAddUser(false);
@@ -58,11 +82,11 @@ export function UserManagement() {
 
   const handleDelete = (user: User) => {
     if (user.id === currentUser?.id) {
-      alert('Вы не можете удалить свой собственный аккаунт.');
+      alert('ВЫ НЕ МОЖЕТЕ УДАЛИТЬ СВОЙ СОБСТВЕННЫЙ АККАУНТ.');
       return;
     }
     
-    if (window.confirm(`Вы уверены, что хотите удалить ${user.name}?`)) {
+    if (window.confirm(`ВЫ УВЕРЕНЫ, ЧТО ХОТИТЕ УДАЛИТЬ ${user.name.toUpperCase()}?`)) {
       deleteUser(user.id);
     }
   };
@@ -88,30 +112,30 @@ export function UserManagement() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3">
           <Users className="w-6 h-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">Управление пользователями</h2>
-          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
-            {users.length} пользователей
+          <h2 className="text-2xl font-bold text-gray-900 uppercase">УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ</h2>
+          <span className="bg-[#CFE8FF] text-blue-700 px-3 py-1 rounded-full text-sm font-medium uppercase">
+            {users.length} ПОЛЬЗОВАТЕЛЕЙ
           </span>
         </div>
         
         <button
           onClick={() => setShowAddUser(true)}
-          className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-teal-700 transition-all font-medium"
+          className="flex items-center space-x-2 bg-[#CFE8FF] text-gray-800 px-4 py-2 rounded-xl hover:bg-blue-200 transition-all font-medium uppercase"
         >
           <UserPlus className="w-5 h-5" />
-          <span>Добавить пользователя</span>
+          <span>ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ</span>
         </button>
       </div>
 
       {/* Add/Edit User Form */}
       {showAddUser && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            {editingUser ? 'Редактировать пользователя' : 'Добавить нового пользователя'}
+          <h3 className="text-lg font-semibold text-gray-900 mb-4 uppercase">
+            {editingUser ? 'РЕДАКТИРОВАТЬ ПОЛЬЗОВАТЕЛЯ' : 'ДОБАВИТЬ НОВОГО ПОЛЬЗОВАТЕЛЯ'}
           </h3>
           
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 text-red-700">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center space-x-2 text-red-700">
               <AlertCircle className="w-4 h-4" />
               <span className="text-sm">{error}</span>
             </div>
@@ -119,60 +143,60 @@ export function UserManagement() {
           
           <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Полное имя
+              <label className="block text-sm font-medium text-gray-700 mb-2 uppercase">
+                ПОЛНОЕ ИМЯ
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="Введите полное имя"
+                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#CFE8FF] focus:border-[#CFE8FF] transition-colors"
+                placeholder="ВВЕДИТЕ ПОЛНОЕ ИМЯ"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email адрес
+              <label className="block text-sm font-medium text-gray-700 mb-2 uppercase">
+                EMAIL АДРЕС
               </label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                placeholder="Введите email адрес"
+                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#CFE8FF] focus:border-[#CFE8FF] transition-colors"
+                placeholder="ВВЕДИТЕ EMAIL АДРЕС"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Роль
+              <label className="block text-sm font-medium text-gray-700 mb-2 uppercase">
+                РОЛЬ
               </label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value as 'admin' | 'user' })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#CFE8FF] focus:border-[#CFE8FF] transition-colors uppercase"
               >
-                <option value="user">Пользователь</option>
-                <option value="admin">Администратор</option>
+                <option value="user">ПОЛЬЗОВАТЕЛЬ</option>
+                <option value="admin">АДМИНИСТРАТОР</option>
               </select>
             </div>
 
             <div className="md:col-span-3 flex items-center space-x-3">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="bg-[#CFE8FF] text-gray-800 px-6 py-2 rounded-xl hover:bg-blue-200 transition-colors font-medium uppercase"
               >
-                {editingUser ? 'Обновить пользователя' : 'Добавить пользователя'}
+                {editingUser ? 'ОБНОВИТЬ ПОЛЬЗОВАТЕЛЯ' : 'ДОБАВИТЬ ПОЛЬЗОВАТЕЛЯ'}
               </button>
               <button
                 type="button"
                 onClick={cancelEdit}
-                className="text-gray-600 hover:text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-100 transition-colors font-medium"
+                className="text-gray-600 hover:text-gray-800 px-6 py-2 rounded-xl hover:bg-gray-100 transition-colors font-medium uppercase"
               >
-                Отмена
+                ОТМЕНА
               </button>
             </div>
           </form>
@@ -183,14 +207,14 @@ export function UserManagement() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[#CFE8FF] border-b border-gray-200">
               <tr>
-                <th className="text-left py-4 px-6 font-medium text-gray-700">Пользователь</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-700">Email</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-700">Роль</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-700">Статистика задач</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-700">Дата регистрации</th>
-                <th className="text-right py-4 px-6 font-medium text-gray-700">Действия</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-700 uppercase">ПОЛЬЗОВАТЕЛЬ</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-700 uppercase">EMAIL</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-700 uppercase">РОЛЬ</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-700 uppercase">СТАТИСТИКА ЗАДАЧ</th>
+                <th className="text-left py-4 px-6 font-medium text-gray-700 uppercase">ДАТА РЕГИСТРАЦИИ</th>
+                <th className="text-right py-4 px-6 font-medium text-gray-700 uppercase">ДЕЙСТВИЯ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -202,15 +226,15 @@ export function UserManagement() {
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="py-4 px-6">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center text-white font-medium">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 flex items-center space-x-2">
-                            <span>{user.name}</span>
+                            <span className="uppercase">{user.name}</span>
                             {isCurrentUser && (
-                              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-                                Вы
+                              <span className="text-xs bg-[#CFE8FF] text-blue-700 px-2 py-1 rounded-full uppercase">
+                                ВЫ
                               </span>
                             )}
                           </div>
@@ -229,15 +253,15 @@ export function UserManagement() {
                         ) : (
                           <UserIcon className="w-4 h-4" />
                         )}
-                        <span className="capitalize">
-                          {user.role === 'admin' ? 'Администратор' : 'Пользователь'}
+                        <span className="uppercase">
+                          {user.role === 'admin' ? 'АДМИНИСТРАТОР' : 'ПОЛЬЗОВАТЕЛЬ'}
                         </span>
                       </div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="text-sm text-gray-600">
-                        <div>{stats.total} всего</div>
-                        <div className="text-xs text-green-600">{stats.completed} выполнено</div>
+                        <div className="uppercase">{stats.total} ВСЕГО</div>
+                        <div className="text-xs text-green-600 uppercase">{stats.completed} ВЫПОЛНЕНО</div>
                       </div>
                     </td>
                     <td className="py-4 px-6 text-sm text-gray-500">

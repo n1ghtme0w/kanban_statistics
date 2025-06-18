@@ -27,9 +27,9 @@ export function KanbanColumn({
   const { setNodeRef } = useDroppable({ id });
 
   const colorClasses = {
-    blue: 'border-blue-200 bg-blue-50',
-    yellow: 'border-yellow-200 bg-yellow-50',
-    green: 'border-green-200 bg-green-50',
+    blue: 'border-[#CFE8FF] bg-[#CFE8FF]/30',
+    yellow: 'border-[#FCFCE9] bg-[#FCFCE9]/30',
+    green: 'border-[#DFFAD7] bg-[#DFFAD7]/30',
   };
 
   return (
@@ -38,8 +38,8 @@ export function KanbanColumn({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <Circle className={`w-3 h-3 fill-current ${color === 'blue' ? 'text-blue-500' : color === 'yellow' ? 'text-yellow-500' : 'text-green-500'}`} />
-            <h2 className="font-semibold text-gray-900">{title}</h2>
-            <span className="bg-white text-gray-600 text-sm px-2 py-1 rounded-full">
+            <h2 className="font-semibold text-gray-900 uppercase text-sm">{title}</h2>
+            <span className="bg-white text-gray-600 text-xs px-2 py-1 rounded-full font-medium">
               {tasks.length}
             </span>
           </div>
@@ -53,7 +53,8 @@ export function KanbanColumn({
 
         <div
           ref={setNodeRef}
-          className="space-y-3 min-h-24 flex-1 overflow-y-auto"
+          className="space-y-3 min-h-24 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+          style={{ maxHeight: 'calc(100vh - 300px)' }}
         >
           <SortableContext items={tasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
             {tasks.map((task) => (
@@ -69,12 +70,12 @@ export function KanbanColumn({
           {tasks.length === 0 && (
             <div className="text-center py-8 text-gray-500">
               <Circle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Пока нет задач</p>
+              <p className="text-sm uppercase">ПОКА НЕТ ЗАДАЧ</p>
               <button
                 onClick={onCreateTask}
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-1"
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium mt-1 uppercase"
               >
-                Создать первую задачу
+                СОЗДАТЬ ПЕРВУЮ ЗАДАЧУ
               </button>
             </div>
           )}

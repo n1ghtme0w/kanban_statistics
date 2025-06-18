@@ -32,9 +32,9 @@ export function KanbanBoard() {
   );
 
   const columns = [
-    { id: 'created', title: 'К выполнению', color: 'blue' },
-    { id: 'in-progress', title: 'В процессе', color: 'yellow' },
-    { id: 'completed', title: 'Выполнено', color: 'green' },
+    { id: 'created', title: 'К ВЫПОЛНЕНИЮ', color: 'blue' },
+    { id: 'in-progress', title: 'В ПРОЦЕССЕ', color: 'yellow' },
+    { id: 'completed', title: 'ВЫПОЛНЕНО', color: 'green' },
   ];
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -93,7 +93,7 @@ export function KanbanBoard() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex space-x-6 p-6 min-w-max h-full">
+        <div className="flex justify-center space-x-6 p-6 min-w-max h-full">
           {columns.map((column) => {
             const columnTasks = sortTasks(
               tasks.filter(task => task.status === column.id)
