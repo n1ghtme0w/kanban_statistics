@@ -43,15 +43,15 @@ export function CalendarView() {
   };
 
   const priorityColors = {
-    high: 'bg-red-100 text-red-700 border-red-200',
-    medium: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-    low: 'bg-green-100 text-green-700 border-green-200',
+    high: 'bg-[#FFE1E7] text-red-700 border-red-200',
+    medium: 'bg-[#FCFCE9] text-yellow-700 border-yellow-200',
+    low: 'bg-[#DFFAD7] text-green-700 border-green-200',
   };
 
   const priorityLabels = {
-    high: 'Высокий',
-    medium: 'Средний',
-    low: 'Низкий',
+    high: 'ВЫСОКИЙ',
+    medium: 'СРЕДНИЙ',
+    low: 'НИЗКИЙ',
   };
 
   return (
@@ -59,9 +59,9 @@ export function CalendarView() {
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <CalendarIcon className="w-6 h-6 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900">
-            {format(currentDate, 'LLLL yyyy', { locale: ru })}
+          <CalendarIcon className="w-6 h-6 text-[#8f8fff]" />
+          <h2 className="text-2xl font-bold text-gray-900 uppercase">
+            {format(currentDate, 'LLLL yyyy', { locale: ru }).toUpperCase()}
           </h2>
         </div>
         
@@ -74,9 +74,9 @@ export function CalendarView() {
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}
-            className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors font-medium"
+            className="px-4 py-2 text-[#8f8fff] hover:bg-blue-50 rounded-lg transition-colors font-medium uppercase"
           >
-            Сегодня
+            СЕГОДНЯ
           </button>
           <button
             onClick={() => navigateMonth('next')}
@@ -90,9 +90,9 @@ export function CalendarView() {
       {/* Calendar Grid */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Days of week header */}
-        <div className="grid grid-cols-7 bg-gray-50">
-          {['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'].map(day => (
-            <div key={day} className="p-3 text-center text-sm font-medium text-gray-700 border-b border-gray-200">
+        <div className="grid grid-cols-7 bg-[#CFE8FF]">
+          {['ВС', 'ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ'].map(day => (
+            <div key={day} className="p-3 text-center text-sm font-medium text-gray-700 border-b border-gray-200 uppercase">
               {day}
             </div>
           ))}
@@ -114,7 +114,7 @@ export function CalendarView() {
               >
                 <div className={`text-sm font-medium mb-2 ${
                   isDayToday 
-                    ? 'bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center'
+                    ? 'bg-[#8f8fff] text-white w-6 h-6 rounded-full flex items-center justify-center'
                     : isCurrentMonth 
                     ? 'text-gray-900' 
                     : 'text-gray-400'
@@ -131,9 +131,9 @@ export function CalendarView() {
                         onClick={() => handleTaskClick(task)}
                         className={`text-xs p-1 rounded border cursor-pointer hover:shadow-sm transition-all ${priorityColors[task.priority]}`}
                       >
-                        <div className="font-medium truncate">{task.title}</div>
+                        <div className="font-medium truncate uppercase">{task.title}</div>
                         {assignee && (
-                          <div className="text-xs opacity-75 truncate">
+                          <div className="text-xs opacity-75 truncate uppercase">
                             {assignee.name}
                           </div>
                         )}
@@ -142,8 +142,8 @@ export function CalendarView() {
                   })}
                   
                   {dayTasks.length > 3 && (
-                    <div className="text-xs text-gray-500 text-center">
-                      +{dayTasks.length - 3} еще
+                    <div className="text-xs text-gray-500 text-center uppercase">
+                      +{dayTasks.length - 3} ЕЩЕ
                     </div>
                   )}
                 </div>
@@ -156,16 +156,16 @@ export function CalendarView() {
       {/* Legend */}
       <div className="mt-6 flex items-center justify-center space-x-6 text-sm">
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-red-100 border border-red-200 rounded"></div>
-          <span className="text-gray-600">Высокий приоритет</span>
+          <div className="w-3 h-3 bg-[#FFE1E7] border border-red-200 rounded"></div>
+          <span className="text-gray-600 uppercase">ВЫСОКИЙ ПРИОРИТЕТ</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-yellow-100 border border-yellow-200 rounded"></div>
-          <span className="text-gray-600">Средний приоритет</span>
+          <div className="w-3 h-3 bg-[#FCFCE9] border border-yellow-200 rounded"></div>
+          <span className="text-gray-600 uppercase">СРЕДНИЙ ПРИОРИТЕТ</span>
         </div>
         <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 bg-green-100 border border-green-200 rounded"></div>
-          <span className="text-gray-600">Низкий приоритет</span>
+          <div className="w-3 h-3 bg-[#DFFAD7] border border-green-200 rounded"></div>
+          <span className="text-gray-600 uppercase">НИЗКИЙ ПРИОРИТЕТ</span>
         </div>
       </div>
 

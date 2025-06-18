@@ -159,14 +159,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         {
           id: '1',
           email: 'admin@kanban.com',
-          name: 'Администратор',
+          name: 'АДМИНИСТРАТОР',
           role: 'admin',
           createdAt: new Date().toISOString(),
         },
         {
           id: '2',
           email: 'user@kanban.com',
-          name: 'Обычный пользователь',
+          name: 'ОБЫЧНЫЙ ПОЛЬЗОВАТЕЛЬ',
           role: 'user',
           createdAt: new Date().toISOString(),
         },
@@ -181,8 +181,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const demoBoards: Board[] = [
         {
           id: '1',
-          name: 'Основная доска',
-          description: 'Главная доска для управления задачами',
+          name: 'ОСНОВНАЯ ДОСКА',
+          description: 'ГЛАВНАЯ ДОСКА ДЛЯ УПРАВЛЕНИЯ ЗАДАЧАМИ',
           createdBy: '1',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -205,8 +205,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const demoTasks: Task[] = [
         {
           id: '1',
-          title: 'Дизайн пользовательского интерфейса',
-          description: 'Создать макеты и прототипы для новой функции',
+          title: 'ДИЗАЙН ПОЛЬЗОВАТЕЛЬСКОГО ИНТЕРФЕЙСА',
+          description: 'СОЗДАТЬ МАКЕТЫ И ПРОТОТИПЫ ДЛЯ НОВОЙ ФУНКЦИИ',
           status: 'in-progress',
           priority: 'high',
           assigneeId: '2',
@@ -221,8 +221,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         },
         {
           id: '2',
-          title: 'Реализация аутентификации',
-          description: 'Настроить систему входа и регистрации пользователей',
+          title: 'РЕАЛИЗАЦИЯ АУТЕНТИФИКАЦИИ',
+          description: 'НАСТРОИТЬ СИСТЕМУ ВХОДА И РЕГИСТРАЦИИ ПОЛЬЗОВАТЕЛЕЙ',
           status: 'created',
           priority: 'high',
           assigneeId: '1',
@@ -246,13 +246,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const user = storedUsers.find(u => u.id === currentUserId);
       if (user) {
         dispatch({ type: 'LOGIN', payload: user });
-      }
-    } else {
-      // Auto-login as admin for demo
-      const adminUser = storedUsers.find(u => u.role === 'admin');
-      if (adminUser) {
-        dispatch({ type: 'LOGIN', payload: adminUser });
-        setCurrentUserId(adminUser.id);
       }
     }
   }, []);
@@ -281,6 +274,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (user) {
       dispatch({ type: 'LOGIN', payload: user });
       setCurrentUserId(user.id);
+      
+      // Check if user has access to any boards, if not create a new one
+      const userBoards = state.boards.filter(board => 
+        board.createdBy === user.id || user.role === 'admin'
+      );
+      
+      if (userBoards.length === 0 && user.role !== 'admin') {
+        const newBoard: Board = {
+          id: Date.now().toString(),
+          name: `ДОСКА ${user.name.toUpperCase()}`,
+          description: `ПЕРСОНАЛЬНАЯ ДОСКА ДЛЯ ${user.name.toUpperCase()}`,
+          createdBy: user.id,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        dispatch({ type: 'ADD_BOARD', payload: newBoard });
+        dispatch({ type: 'SET_CURRENT_BOARD', payload: newBoard.id });
+      } else if (userBoards.length > 0) {
+        dispatch({ type: 'SET_CURRENT_BOARD', payload: userBoards[0].id });
+      }
+      
       return true;
     }
     return false;
@@ -295,7 +309,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newUser: User = {
       id: Date.now().toString(),
       email,
-      name,
+      name: name.toUpperCase(),
       role: 'user',
       createdAt: new Date().toISOString(),
     };
@@ -303,6 +317,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     dispatch({ type: 'ADD_USER', payload: newUser });
     dispatch({ type: 'LOGIN', payload: newUser });
     setCurrentUserId(newUser.id);
+    
+    // Create a personal board for the new user
+    const newBoard: Board = {
+      id: (Date.now() + 1).toString(),
+      name: `ДОСКА ${newUser.name}`,
+      description: `ПЕРСОНАЛЬНАЯ ДОСКА ДЛЯ ${newUser.name}`,
+      createdBy: newUser.id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    dispatch({ type: 'ADD_BOARD', payload: newBoard });
+    dispatch({ type: 'SET_CURRENT_BOARD', payload: newBoard.id });
+    
     return true;
   };
 
@@ -342,24 +369,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const existingUserByName = state.users.find(u => u.name.toLowerCase() === userData.name.toLowerCase());
     
     if (existingUserByEmail) {
-      return { success: false, message: 'Пользователь с таким email уже существует' };
+      return { success: false, message: 'ПОЛЬЗОВАТЕЛЬ С ТАКИМ EMAIL УЖЕ СУЩЕСТВУЕТ' };
     }
     
     if (existingUserByName) {
-      return { success: false, message: 'Пользователь с таким именем уже существует' };
+      return { success: false, message: 'ПОЛЬЗОВАТЕЛЬ С ТАКИМ ИМЕНЕМ УЖЕ СУЩЕСТВУЕТ' };
     }
 
     const newUser: User = {
       ...userData,
+      name: userData.name.toUpperCase(),
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
     };
     dispatch({ type: 'ADD_USER', payload: newUser });
-    return { success: true, message: 'Пользователь успешно создан' };
+    return { success: true, message: 'ПОЛЬЗОВАТЕЛЬ УСПЕШНО СОЗДАН' };
   };
 
   const updateUser = (userId: string, updates: Partial<User>) => {
-    dispatch({ type: 'UPDATE_USER', payload: { id: userId, updates } });
+    const updatedUser = { ...updates };
+    if (updatedUser.name) {
+      updatedUser.name = updatedUser.name.toUpperCase();
+    }
+    dispatch({ type: 'UPDATE_USER', payload: { id: userId, updates: updatedUser } });
   };
 
   const deleteUser = (userId: string) => {
@@ -369,6 +401,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const addBoard = (boardData: Omit<Board, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newBoard: Board = {
       ...boardData,
+      name: boardData.name.toUpperCase(),
+      description: boardData.description?.toUpperCase(),
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -377,11 +411,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateBoard = (boardId: string, updates: Partial<Board>) => {
-    dispatch({ type: 'UPDATE_BOARD', payload: { id: boardId, updates } });
+    const updatedBoard = { ...updates };
+    if (updatedBoard.name) {
+      updatedBoard.name = updatedBoard.name.toUpperCase();
+    }
+    if (updatedBoard.description) {
+      updatedBoard.description = updatedBoard.description.toUpperCase();
+    }
+    dispatch({ type: 'UPDATE_BOARD', payload: { id: boardId, updates: updatedBoard } });
   };
 
   const deleteBoard = (boardId: string) => {
+    // Check if user can delete this board
+    const board = state.boards.find(b => b.id === boardId);
+    if (!board) return;
+    
+    const canDelete = state.currentUser?.role === 'admin' || 
+      (board.createdBy === state.currentUser?.id && state.boards.length > 1);
+    
+    if (!canDelete) {
+      alert('ВЫ НЕ МОЖЕТЕ УДАЛИТЬ ЭТУ ДОСКУ');
+      return;
+    }
+    
     dispatch({ type: 'DELETE_BOARD', payload: boardId });
+    
+    // Switch to another board if current board was deleted
+    if (state.currentBoardId === boardId) {
+      const remainingBoards = state.boards.filter(b => b.id !== boardId);
+      if (remainingBoards.length > 0) {
+        dispatch({ type: 'SET_CURRENT_BOARD', payload: remainingBoards[0].id });
+      }
+    }
   };
 
   const setCurrentBoard = (boardId: string) => {

@@ -50,6 +50,7 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -81,10 +82,44 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
     }
     setNewAttachments([]);
     setAudioBlob(null);
+    setHasUnsavedChanges(false);
   }, [task, currentUser, defaultStatus]);
+
+  // Track changes
+  useEffect(() => {
+    if (task) {
+      const hasChanges = 
+        formData.title !== task.title ||
+        formData.description !== task.description ||
+        formData.status !== task.status ||
+        formData.priority !== task.priority ||
+        formData.assigneeId !== task.assigneeId ||
+        formData.deadline !== (task.deadline ? format(new Date(task.deadline), 'yyyy-MM-dd') : '') ||
+        formData.isPinned !== task.isPinned ||
+        newAttachments.length > 0 ||
+        audioBlob !== null ||
+        comments.length !== task.comments.length;
+      setHasUnsavedChanges(hasChanges);
+    } else {
+      const hasChanges = 
+        formData.title !== '' ||
+        formData.description !== '' ||
+        formData.assigneeId !== (currentUser?.id || '') ||
+        formData.deadline !== '' ||
+        formData.isPinned !== false ||
+        newAttachments.length > 0 ||
+        audioBlob !== null;
+      setHasUnsavedChanges(hasChanges);
+    }
+  }, [formData, newAttachments, audioBlob, comments, task, currentUser]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!formData.title.trim()) {
+      alert('НАЗВАНИЕ ЗАДАЧИ НЕ МОЖЕТ БЫТЬ ПУСТЫМ');
+      return;
+    }
     
     // Process attachments
     const processedAttachments = [
@@ -125,7 +160,19 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
       addTask(taskData);
     }
 
+    setHasUnsavedChanges(false);
     onClose();
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges) {
+      if (window.confirm('У ВАС ЕСТЬ НЕСОХРАНЕННЫЕ ИЗМЕНЕНИЯ. ВЫ УВЕРЕНЫ, ЧТО ХОТИТЕ ЗАКРЫТЬ?')) {
+        setHasUnsavedChanges(false);
+        onClose();
+      }
+    } else {
+      onClose();
+    }
   };
 
   const handleAddComment = () => {
@@ -169,6 +216,15 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const playAttachment = (attachment: Attachment) => {
+    if (attachment.type.startsWith('audio/')) {
+      const audio = new Audio(attachment.url);
+      audio.play();
+    } else if (attachment.type.startsWith('image/')) {
+      window.open(attachment.url, '_blank');
+    }
   };
 
   const startRecording = async () => {
@@ -296,7 +352,7 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
             {task ? 'РЕДАКТИРОВАТЬ ЗАДАЧУ' : 'СОЗДАТЬ НОВУЮ ЗАДАЧУ'}
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
@@ -423,37 +479,61 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                 ВЛОЖЕНИЯ И ГОЛОСОВЫЕ СООБЩЕНИЯ
               </label>
               <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex items-center space-x-2 px-4 py-2 bg-[#CFE8FF] rounded-xl hover:bg-blue-200 transition-colors"
-                  >
-                    <Upload className="w-4 h-4" />
-                    <span className="uppercase">ПРИКРЕПИТЬ ФАЙЛЫ</span>
-                  </button>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex items-center space-x-2 px-4 py-2 bg-[#CFE8FF] rounded-xl hover:bg-blue-200 transition-colors"
+                    >
+                      <Upload className="w-4 h-4" />
+                      <span className="uppercase">ПРИКРЕПИТЬ ФАЙЛЫ</span>
+                    </button>
+                    
+                    <button
+                      type="button"
+                      onClick={isRecording ? stopRecording : startRecording}
+                      className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors ${
+                        isRecording 
+                          ? 'bg-red-100 text-red-700 hover:bg-red-200' 
+                          : 'bg-[#CFE8FF] hover:bg-blue-200'
+                      }`}
+                    >
+                      {isRecording ? (
+                        <>
+                          <Square className="w-4 h-4" />
+                          <span className="uppercase">ОСТАНОВИТЬ ЗАПИСЬ</span>
+                        </>
+                      ) : (
+                        <>
+                          <Mic className="w-4 h-4" />
+                          <span className="uppercase">ЗАПИСАТЬ ГОЛОС</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   
-                  <button
-                    type="button"
-                    onClick={isRecording ? stopRecording : startRecording}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-xl transition-colors ${
-                      isRecording 
-                        ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                        : 'bg-[#CFE8FF] hover:bg-blue-200'
-                    }`}
-                  >
-                    {isRecording ? (
-                      <>
-                        <Square className="w-4 h-4" />
-                        <span className="uppercase">ОСТАНОВИТЬ ЗАПИСЬ</span>
-                      </>
-                    ) : (
-                      <>
-                        <Mic className="w-4 h-4" />
-                        <span className="uppercase">ЗАПИСАТЬ ГОЛОС</span>
-                      </>
-                    )}
-                  </button>
+                  {/* Audio playback - aligned right */}
+                  {audioBlob && (
+                    <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-xl border border-green-200">
+                      <button
+                        type="button"
+                        onClick={playAudio}
+                        className="flex items-center space-x-2 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
+                      >
+                        <Play className="w-4 h-4" />
+                        <span className="uppercase">ВОСПРОИЗВЕСТИ</span>
+                      </button>
+                      <span className="text-sm text-green-700 uppercase">ГОЛОСОВОЕ СООБЩЕНИЕ ЗАПИСАНО</span>
+                      <button
+                        type="button"
+                        onClick={() => setAudioBlob(null)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <input
@@ -464,32 +544,10 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                   className="hidden"
                 />
                 
-                {/* Audio playback */}
-                {audioBlob && (
-                  <div className="flex items-center space-x-2 p-3 bg-green-50 rounded-xl border border-green-200">
-                    <button
-                      type="button"
-                      onClick={playAudio}
-                      className="flex items-center space-x-2 px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors"
-                    >
-                      <Play className="w-4 h-4" />
-                      <span className="uppercase">ВОСПРОИЗВЕСТИ</span>
-                    </button>
-                    <span className="text-sm text-green-700 uppercase">ГОЛОСОВОЕ СООБЩЕНИЕ ЗАПИСАНО</span>
-                    <button
-                      type="button"
-                      onClick={() => setAudioBlob(null)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-                
                 {/* Existing attachments */}
                 {attachments.length > 0 && (
                   <div className="space-y-2">
-                    <div className="text-sm font-medium text-gray-700 uppercase">СУЩЕСТВУЮЩИЕ ВЛОЖЕНИЯ:</div>
+                    <div className="text-sm font-medium text-gray-700 uppercase bg-[#CCCCFF] px-3 py-1 rounded">СУЩЕСТВУЮЩИЕ ВЛОЖЕНИЯ:</div>
                     {attachments.map((attachment) => (
                       <div key={attachment.id} className="flex items-center justify-between p-3 bg-blue-50 rounded-xl border border-blue-200">
                         <div className="flex items-center space-x-2">
@@ -500,6 +558,16 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                           </span>
                         </div>
                         <div className="flex items-center space-x-2">
+                          {(attachment.type.startsWith('audio/') || attachment.type.startsWith('image/')) && (
+                            <button
+                              type="button"
+                              onClick={() => playAttachment(attachment)}
+                              className="text-blue-600 hover:text-blue-800"
+                              title={attachment.type.startsWith('audio/') ? 'ВОСПРОИЗВЕСТИ' : 'ПРОСМОТРЕТЬ'}
+                            >
+                              <Play className="w-4 h-4" />
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => downloadAttachment(attachment)}
@@ -588,7 +656,7 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                     className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
                   />
                   <span className="text-sm font-medium text-gray-700 uppercase">ЗАКРЕПИТЬ ЗАДАЧУ</span>
-                  <Pin className="w-4 h-4 text-orange-500" />
+                  <Pin className="w-4 h-4 text-orange-600" />
                 </label>
               </div>
             </div>
@@ -681,8 +749,8 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-center p-6 bg-gray-50 border-t border-gray-200">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between p-6 bg-gray-50 border-t border-gray-200">
+          <div className="flex items-center">
             {task && (
               <button
                 type="button"
@@ -693,10 +761,12 @@ export function TaskModal({ task, isOpen, onClose, defaultStatus = 'created' }: 
                 <span>УДАЛИТЬ</span>
               </button>
             )}
-            
+          </div>
+          
+          <div className="flex items-center space-x-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors font-medium uppercase"
             >
               ОТМЕНА

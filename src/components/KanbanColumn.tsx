@@ -32,9 +32,15 @@ export function KanbanColumn({
     green: 'border-[#DFFAD7] bg-[#DFFAD7]/30',
   };
 
+  const borderColors = {
+    blue: 'border-blue-300',
+    yellow: 'border-yellow-300', 
+    green: 'border-green-300',
+  };
+
   return (
-    <div className="flex flex-col h-full w-80 flex-shrink-0">
-      <div className={`border-2 border-dashed rounded-xl p-4 h-full ${colorClasses[color as keyof typeof colorClasses] || 'border-gray-200 bg-gray-50'}`}>
+    <div className="flex flex-col h-full flex-1 max-w-sm">
+      <div className={`border-2 border-dashed rounded-xl p-4 h-full ${colorClasses[color as keyof typeof colorClasses] || 'border-gray-200 bg-gray-50'} ${borderColors[color as keyof typeof borderColors] || 'border-gray-300'}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <Circle className={`w-3 h-3 fill-current ${color === 'blue' ? 'text-blue-500' : color === 'yellow' ? 'text-yellow-500' : 'text-green-500'}`} />

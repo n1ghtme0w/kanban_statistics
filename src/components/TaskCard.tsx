@@ -41,6 +41,12 @@ export function TaskCard({ task, users, onClick, className = '' }: TaskCardProps
     low: 'НИЗКИЙ',
   };
 
+  const priorityTextColors = {
+    high: 'text-red-700',
+    medium: 'text-yellow-700',
+    low: 'text-green-700',
+  };
+
   const statusIcons = {
     created: Clock,
     'in-progress': AlertCircle,
@@ -56,6 +62,13 @@ export function TaskCard({ task, users, onClick, className = '' }: TaskCardProps
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Check if user can delete this task
+    if (currentUser?.role !== 'admin' && task.creatorId !== currentUser?.id) {
+      alert('ВЫ МОЖЕТЕ УДАЛЯТЬ ТОЛЬКО СОЗДАННЫЕ ВАМИ ЗАДАЧИ');
+      return;
+    }
+    
     if (window.confirm('ВЫ УВЕРЕНЫ, ЧТО ХОТИТЕ УДАЛИТЬ ЭТУ ЗАДАЧУ?')) {
       deleteTask(task.id);
     }
@@ -96,18 +109,23 @@ export function TaskCard({ task, users, onClick, className = '' }: TaskCardProps
           <button
             onClick={handlePinClick}
             className={`p-1 rounded hover:bg-white/50 transition-colors ${
-              task.isPinned ? 'text-orange-500' : 'text-gray-400 hover:text-orange-500'
+              task.isPinned ? 'text-orange-600' : 'text-gray-400 hover:text-orange-600'
             }`}
           >
             <Pin className="w-4 h-4" />
           </button>
         </div>
-        <button
-          onClick={handleDeleteClick}
-          className="p-1 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        <div className="flex items-center space-x-2">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium border ${priorityColors[task.priority]} ${priorityTextColors[task.priority]}`}>
+            {priorityLabels[task.priority]}
+          </span>
+          <button
+            onClick={handleDeleteClick}
+            className="p-1 rounded hover:bg-red-100 text-gray-400 hover:text-red-600 transition-colors opacity-0 group-hover:opacity-100"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Title and Description */}
@@ -120,7 +138,7 @@ export function TaskCard({ task, users, onClick, className = '' }: TaskCardProps
 
       {/* Latest Comment Preview */}
       {latestComment && commentAuthor && (
-        <div className="bg-white/60 rounded-lg p-2 mb-3 border border-white/40">
+        <div className="bg-gray-100 rounded-lg p-2 mb-3 border border-gray-200">
           <div className="flex items-center space-x-2 mb-1">
             <User className="w-3 h-3 text-gray-500" />
             <span className="text-xs font-medium text-gray-700 uppercase">{commentAuthor.name}:</span>

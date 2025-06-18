@@ -21,11 +21,6 @@ export function Analytics() {
   const completedTasks = tasks.filter(task => task.status === 'completed').length;
   const inProgressTasks = tasks.filter(task => task.status === 'in-progress').length;
   const createdTasks = tasks.filter(task => task.status === 'created').length;
-  
-  // Priority statistics
-  const highPriorityTasks = tasks.filter(task => task.priority === 'high').length;
-  const mediumPriorityTasks = tasks.filter(task => task.priority === 'medium').length;
-  const lowPriorityTasks = tasks.filter(task => task.priority === 'low').length;
 
   // Overdue tasks
   const overdueTasks = tasks.filter(task => 
@@ -62,9 +57,9 @@ export function Analytics() {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-sm font-medium text-gray-600 uppercase">{title}</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+          {subtitle && <p className="text-sm text-gray-500 mt-1 uppercase">{subtitle}</p>}
         </div>
         <div className={`p-3 rounded-lg ${color}`}>
           <Icon className="w-6 h-6 text-white" />
@@ -77,38 +72,38 @@ export function Analytics() {
     <div className="p-6">
       <div className="flex items-center space-x-3 mb-6">
         <BarChart3 className="w-6 h-6 text-blue-600" />
-        <h2 className="text-2xl font-bold text-gray-900">Аналитика задач</h2>
+        <h2 className="text-2xl font-bold text-gray-900 uppercase">АНАЛИТИКА ЗАДАЧ</h2>
       </div>
 
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <StatCard
           icon={CheckCircle2}
-          title="Всего задач"
+          title="ВСЕГО ЗАДАЧ"
           value={totalTasks}
-          subtitle={`${completionRate}% выполнено`}
-          color="bg-blue-500"
+          subtitle={`${completionRate}% ВЫПОЛНЕНО`}
+          color="bg-blue-400"
         />
         <StatCard
           icon={TrendingUp}
-          title="Выполнено"
+          title="ВЫПОЛНЕНО"
           value={completedTasks}
-          subtitle="Завершенные задачи"
-          color="bg-green-500"
+          subtitle="ЗАВЕРШЕННЫЕ ЗАДАЧИ"
+          color="bg-green-400"
         />
         <StatCard
           icon={Clock}
-          title="В процессе"
+          title="В ПРОЦЕССЕ"
           value={inProgressTasks}
-          subtitle="Активные задачи"
-          color="bg-yellow-500"
+          subtitle="АКТИВНЫЕ ЗАДАЧИ"
+          color="bg-yellow-400"
         />
         <StatCard
           icon={AlertTriangle}
-          title="Просрочено"
+          title="ПРОСРОЧЕНО"
           value={overdueTasks}
-          subtitle="Требует внимания"
-          color="bg-red-500"
+          subtitle="ТРЕБУЕТ ВНИМАНИЯ"
+          color="bg-red-400"
         />
       </div>
 
@@ -117,19 +112,19 @@ export function Analytics() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
             <PieChart className="w-5 h-5 text-blue-600" />
-            <span>Распределение по статусам</span>
+            <span className="uppercase">РАСПРЕДЕЛЕНИЕ ПО СТАТУСАМ</span>
           </h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-gray-400 rounded"></div>
-                <span className="text-sm text-gray-700">Создано</span>
+                <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                <span className="text-sm text-gray-700 uppercase">СОЗДАНО</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-900">{createdTasks}</span>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-gray-400 h-2 rounded-full" 
+                    className="bg-gray-300 h-2 rounded-full" 
                     style={{ width: `${totalTasks > 0 ? (createdTasks / totalTasks) * 100 : 0}%` }}
                   ></div>
                 </div>
@@ -137,14 +132,14 @@ export function Analytics() {
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                <span className="text-sm text-gray-700">В процессе</span>
+                <div className="w-4 h-4 bg-yellow-300 rounded"></div>
+                <span className="text-sm text-gray-700 uppercase">В ПРОЦЕССЕ</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-900">{inProgressTasks}</span>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-yellow-500 h-2 rounded-full" 
+                    className="bg-yellow-300 h-2 rounded-full" 
                     style={{ width: `${totalTasks > 0 ? (inProgressTasks / totalTasks) * 100 : 0}%` }}
                   ></div>
                 </div>
@@ -152,14 +147,14 @@ export function Analytics() {
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span className="text-sm text-gray-700">Выполнено</span>
+                <div className="w-4 h-4 bg-green-300 rounded"></div>
+                <span className="text-sm text-gray-700 uppercase">ВЫПОЛНЕНО</span>
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-gray-900">{completedTasks}</span>
                 <div className="w-20 bg-gray-200 rounded-full h-2">
                   <div 
-                    className="bg-green-500 h-2 rounded-full" 
+                    className="bg-green-300 h-2 rounded-full" 
                     style={{ width: `${totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0}%` }}
                   ></div>
                 </div>
@@ -168,56 +163,37 @@ export function Analytics() {
           </div>
         </div>
 
-        {/* Priority Distribution */}
+        {/* Task Count Chart */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            <span>Распределение по приоритету</span>
+            <BarChart3 className="w-5 h-5 text-green-600" />
+            <span className="uppercase">ГРАФИК ЗАДАЧ</span>
           </h3>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-red-500 rounded"></div>
-                <span className="text-sm text-gray-700">Высокий</span>
+            <div className="flex items-end space-x-2 h-32">
+              <div className="flex flex-col items-center flex-1">
+                <div 
+                  className="w-full bg-gray-300 rounded-t"
+                  style={{ height: `${totalTasks > 0 ? (createdTasks / totalTasks) * 100 : 0}%` }}
+                ></div>
+                <span className="text-xs text-gray-600 mt-2 uppercase">СОЗДАНО</span>
+                <span className="text-sm font-bold text-gray-900">{createdTasks}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-900">{highPriorityTasks}</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-red-500 h-2 rounded-full" 
-                    style={{ width: `${totalTasks > 0 ? (highPriorityTasks / totalTasks) * 100 : 0}%` }}
-                  ></div>
-                </div>
+              <div className="flex flex-col items-center flex-1">
+                <div 
+                  className="w-full bg-yellow-300 rounded-t"
+                  style={{ height: `${totalTasks > 0 ? (inProgressTasks / totalTasks) * 100 : 0}%` }}
+                ></div>
+                <span className="text-xs text-gray-600 mt-2 uppercase">В ПРОЦЕССЕ</span>
+                <span className="text-sm font-bold text-gray-900">{inProgressTasks}</span>
               </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-                <span className="text-sm text-gray-700">Средний</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-900">{mediumPriorityTasks}</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-yellow-500 h-2 rounded-full" 
-                    style={{ width: `${totalTasks > 0 ? (mediumPriorityTasks / totalTasks) * 100 : 0}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-4 h-4 bg-green-500 rounded"></div>
-                <span className="text-sm text-gray-700">Низкий</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm font-medium text-gray-900">{lowPriorityTasks}</span>
-                <div className="w-20 bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-green-500 h-2 rounded-full" 
-                    style={{ width: `${totalTasks > 0 ? (lowPriorityTasks / totalTasks) * 100 : 0}%` }}
-                  ></div>
-                </div>
+              <div className="flex flex-col items-center flex-1">
+                <div 
+                  className="w-full bg-green-300 rounded-t"
+                  style={{ height: `${totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0}%` }}
+                ></div>
+                <span className="text-xs text-gray-600 mt-2 uppercase">ВЫПОЛНЕНО</span>
+                <span className="text-sm font-bold text-gray-900">{completedTasks}</span>
               </div>
             </div>
           </div>
@@ -228,18 +204,18 @@ export function Analytics() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
           <Users className="w-5 h-5 text-purple-600" />
-          <span>Производительность пользователей</span>
+          <span className="uppercase">ПРОИЗВОДИТЕЛЬНОСТЬ ПОЛЬЗОВАТЕЛЕЙ</span>
         </h3>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Пользователь</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-700">Всего</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-700">Выполнено</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-700">В процессе</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-700">Создано</th>
-                <th className="text-center py-3 px-4 font-medium text-gray-700">Эффективность</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700 uppercase">ПОЛЬЗОВАТЕЛЬ</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700 uppercase">ВСЕГО</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700 uppercase">ВЫПОЛНЕНО</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700 uppercase">В ПРОЦЕССЕ</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700 uppercase">СОЗДАНО</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-700 uppercase">ЭФФЕКТИВНОСТЬ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -249,10 +225,10 @@ export function Analytics() {
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="py-3 px-4">
                       <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center text-white text-sm font-medium">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-medium text-gray-900">{user.name}</span>
+                        <span className="font-medium text-gray-900 uppercase">{user.name}</span>
                       </div>
                     </td>
                     <td className="text-center py-3 px-4 text-gray-900 font-medium">{user.total}</td>
@@ -276,8 +252,8 @@ export function Analytics() {
                         <div className="w-16 bg-gray-200 rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
-                              efficiency >= 80 ? 'bg-green-500' : 
-                              efficiency >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                              efficiency >= 80 ? 'bg-green-300' : 
+                              efficiency >= 60 ? 'bg-yellow-300' : 'bg-red-300'
                             }`}
                             style={{ width: `${efficiency}%` }}
                           ></div>
@@ -297,20 +273,20 @@ export function Analytics() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
           <Calendar className="w-5 h-5 text-indigo-600" />
-          <span>Недавняя активность</span>
+          <span className="uppercase">НЕДАВНЯЯ АКТИВНОСТЬ</span>
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <div className="text-2xl font-bold text-blue-600">{recentTasks}</div>
-            <div className="text-sm text-blue-700">Задач создано за неделю</div>
+            <div className="text-sm text-blue-700 uppercase">ЗАДАЧ СОЗДАНО ЗА НЕДЕЛЮ</div>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <div className="text-2xl font-bold text-green-600">{completionRate}%</div>
-            <div className="text-sm text-green-700">Общий процент выполнения</div>
+            <div className="text-sm text-green-700 uppercase">ОБЩИЙ ПРОЦЕНТ ВЫПОЛНЕНИЯ</div>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
             <div className="text-2xl font-bold text-purple-600">{users.length}</div>
-            <div className="text-sm text-purple-700">Активных пользователей</div>
+            <div className="text-sm text-purple-700 uppercase">АКТИВНЫХ ПОЛЬЗОВАТЕЛЕЙ</div>
           </div>
         </div>
       </div>

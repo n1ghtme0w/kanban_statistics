@@ -44,8 +44,8 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
               <CheckCircle2 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">KanbanPro</h1>
-              <p className="text-sm text-gray-500">{pendingTasks} активных задач</p>
+              <h1 className="text-xl font-bold text-gray-900 uppercase">KANBANPRO</h1>
+              <p className="text-sm text-gray-500 uppercase">{pendingTasks} АКТИВНЫХ ЗАДАЧ</p>
             </div>
           </div>
 
@@ -53,11 +53,11 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
           <div className="relative">
             <button
               onClick={() => setShowBoardDropdown(!showBoardDropdown)}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              className="flex items-center space-x-2 px-4 py-2 bg-[#CCCCFF] hover:bg-blue-200 rounded-lg transition-colors"
             >
               <Folder className="w-4 h-4 text-gray-600" />
-              <span className="font-medium text-gray-900">
-                {currentBoard?.name || 'Выберите доску'}
+              <span className="font-medium text-gray-900 uppercase">
+                {currentBoard?.name || 'ВЫБЕРИТЕ ДОСКУ'}
               </span>
               <ChevronDown className="w-4 h-4 text-gray-600" />
             </button>
@@ -66,19 +66,19 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
               <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                 <div className="p-2">
                   <div className="text-xs font-medium text-gray-500 uppercase tracking-wide px-3 py-2">
-                    Доски
+                    ДОСКИ
                   </div>
                   {boards.map(board => (
                     <button
                       key={board.id}
                       onClick={() => handleBoardChange(board.id)}
                       className={`w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition-colors ${
-                        board.id === currentBoardId ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                        board.id === currentBoardId ? 'bg-[#CFE8FF] text-blue-700' : 'text-gray-700'
                       }`}
                     >
-                      <div className="font-medium">{board.name}</div>
+                      <div className="font-medium uppercase">{board.name}</div>
                       {board.description && (
-                        <div className="text-xs text-gray-500 truncate">{board.description}</div>
+                        <div className="text-xs text-gray-500 truncate uppercase">{board.description}</div>
                       )}
                     </button>
                   ))}
@@ -91,7 +91,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
                     className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-blue-600 flex items-center space-x-2"
                   >
                     <FolderPlus className="w-4 h-4" />
-                    <span>Создать новую доску</span>
+                    <span className="uppercase">СОЗДАТЬ НОВУЮ ДОСКУ</span>
                   </button>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
               }`}
             >
               <LayoutGrid className="w-5 h-5" />
-              <span>Доска</span>
+              <span className="uppercase">ДОСКА</span>
             </button>
             <button
               onClick={() => onViewChange('calendar')}
@@ -119,7 +119,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
               }`}
             >
               <Calendar className="w-5 h-5" />
-              <span>Календарь</span>
+              <span className="uppercase">КАЛЕНДАРЬ</span>
             </button>
             <button
               onClick={() => onViewChange('analytics')}
@@ -130,7 +130,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
               }`}
             >
               <BarChart3 className="w-5 h-5" />
-              <span>Аналитика</span>
+              <span className="uppercase">АНАЛИТИКА</span>
             </button>
             {currentUser?.role === 'admin' && (
               <button
@@ -142,7 +142,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
                 }`}
               >
                 <Users className="w-5 h-5" />
-                <span>Пользователи</span>
+                <span className="uppercase">ПОЛЬЗОВАТЕЛИ</span>
               </button>
             )}
           </nav>
@@ -151,10 +151,10 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
         <div className="flex items-center space-x-4">
           <button
             onClick={onCreateTask}
-            className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-blue-700 hover:to-teal-700 transition-all font-medium"
+            className="flex items-center space-x-2 bg-[#CCCCFF] text-gray-800 px-4 py-2 rounded-lg hover:bg-blue-200 transition-all font-medium"
           >
             <Plus className="w-5 h-5" />
-            <span className="hidden sm:inline">Создать задачу</span>
+            <span className="hidden sm:inline uppercase">СОЗДАТЬ ЗАДАЧУ</span>
           </button>
 
           <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
@@ -164,8 +164,8 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
 
           <div className="flex items-center space-x-3">
             <div className="hidden sm:block text-right">
-              <div className="text-sm font-medium text-gray-900">{currentUser?.name}</div>
-              <div className="text-xs text-gray-500 capitalize">{currentUser?.role}</div>
+              <div className="text-sm font-medium text-gray-900 uppercase">{currentUser?.name}</div>
+              <div className="text-xs text-gray-500 uppercase">{currentUser?.role}</div>
             </div>
             <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
               {currentUser?.name?.charAt(0).toUpperCase()}
@@ -191,7 +191,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
           }`}
         >
           <LayoutGrid className="w-4 h-4" />
-          <span className="text-sm">Доска</span>
+          <span className="text-sm uppercase">ДОСКА</span>
         </button>
         <button
           onClick={() => onViewChange('calendar')}
@@ -202,7 +202,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
           }`}
         >
           <Calendar className="w-4 h-4" />
-          <span className="text-sm">Календарь</span>
+          <span className="text-sm uppercase">КАЛЕНДАРЬ</span>
         </button>
         <button
           onClick={() => onViewChange('analytics')}
@@ -213,7 +213,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
           }`}
         >
           <BarChart3 className="w-4 h-4" />
-          <span className="text-sm">Аналитика</span>
+          <span className="text-sm uppercase">АНАЛИТИКА</span>
         </button>
         {currentUser?.role === 'admin' && (
           <button
@@ -225,7 +225,7 @@ export function Header({ currentView, onViewChange, onCreateTask }: HeaderProps)
             }`}
           >
             <Users className="w-4 h-4" />
-            <span className="text-sm">Пользователи</span>
+            <span className="text-sm uppercase">ПОЛЬЗОВАТЕЛИ</span>
           </button>
         )}
       </nav>
